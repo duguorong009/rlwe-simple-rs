@@ -1,9 +1,8 @@
-
 /// Ring-Polynomial: Fq[x] / (x ^ n + 1)
 /// range of the reminder is set to (-q/2, q/2)
 pub struct Rq {
     f: Vec<i64>,
-    q: i64, // modulus
+    q: i64,         // modulus
     poly: Vec<i64>, // coefficients [x0, x1, ..., xn]
 }
 
@@ -13,7 +12,7 @@ impl Rq {
     /// q: modulus
     pub fn new(coeffs: Vec<i64>, q: i64) -> Rq {
         let n = coeffs.len(); // degree of the polynomial
-        
+
         let mut f = vec![0; n + 1];
         f[0] = 1;
         f[n] = 1;
@@ -26,6 +25,19 @@ impl Rq {
             q,
             poly: coeffs.into_iter().rev().collect(),
         }
+    }
+}
+
+impl std::fmt::Display for Rq {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "Rq: {:?} (mod {}), reminder range: ({}, {})",
+            self.poly,
+            self.q,
+            -self.q / 2,
+            self.q / 2
+        )
     }
 }
 
