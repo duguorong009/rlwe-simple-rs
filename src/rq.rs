@@ -1,3 +1,5 @@
+use std::ops::Add;
+
 use polynomial::Polynomial;
 
 /// Ring-Polynomial: Fq[x] / (x ^ n + 1)
@@ -42,6 +44,15 @@ impl std::fmt::Display for Rq {
             -self.q / 2,
             self.q / 2
         )
+    }
+}
+
+impl Add for Rq {
+    type Output = Rq;
+
+    fn add(self, other: Rq) -> Rq {
+        let poly = self.poly + other.poly;
+        Rq::new(poly.data().to_vec(), self.q)
     }
 }
 
