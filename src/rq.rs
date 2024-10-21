@@ -6,7 +6,7 @@ use polynomial::Polynomial;
 /// range of the reminder is set to (-q/2, q/2)
 pub struct Rq {
     f: Polynomial<i64>,
-    q: i64,         // modulus
+    q: i64,                // modulus
     poly: Polynomial<i64>, // coefficients
 }
 
@@ -26,11 +26,7 @@ impl Rq {
         let coeffs = crange(coeffs, q);
         let poly = Polynomial::new(coeffs);
 
-        Rq {
-            f,
-            q,
-            poly,
-        }
+        Rq { f, q, poly }
     }
 }
 
@@ -66,6 +62,21 @@ impl Mul for Rq {
     }
 }
 
+impl Mul<i64> for Rq {
+    type Output = Rq;
+
+    fn mul(self, other: i64) -> Rq {
+        let coeffs = self
+            .poly
+            .data()
+            .to_vec()
+            .into_iter()
+            .map(|i| i * other)
+            .collect();
+        Rq::new(coeffs, self.q)
+    }
+}
+
 fn crange(coeffs: Vec<i64>, q: i64) -> Vec<i64> {
     let mut coeffs = coeffs;
     for i in 0..coeffs.len() {
@@ -76,11 +87,14 @@ fn crange(coeffs: Vec<i64>, q: i64) -> Vec<i64> {
     coeffs
 }
 
-fn poly_div(dividend: &Polynomial<i64>, divisor: &Polynomial<i64>) -> (Polynomial<i64>, Polynomial<i64>) {
-    let mut dividend = dividend.data().to_vec().clone();  // We will modify the dividend
+fn poly_div(
+    dividend: &Polynomial<i64>,
+    divisor: &Polynomial<i64>,
+) -> (Polynomial<i64>, Polynomial<i64>) {
+    let mut dividend = dividend.data().to_vec().clone(); // We will modify the dividend
     let divisor = divisor.data().to_vec().clone();
     let mut quotient = vec![0; dividend.len() - divisor.len() + 1];
-    
+
     // Perform division until degree of the dividend is less than divisor
     while dividend.len() >= divisor.len() {
         // Leading term of the quotient
@@ -101,7 +115,7 @@ fn poly_div(dividend: &Polynomial<i64>, divisor: &Polynomial<i64>) -> (Polynomia
 
     let quotient = Polynomial::new(quotient);
     let dividend = Polynomial::new(dividend);
-    (quotient, dividend)  // Quotient and remainder
+    (quotient, dividend) // Quotient and remainder
 }
 
 #[test]
@@ -118,5 +132,5 @@ fn test_poly_div() {
     let divisor = Polynomial::new(vec![1, 1]);
     let (q, r) = poly_div(&dividend, &divisor);
     assert_eq!(q, Polynomial::new(vec![3, 1, 2]));
-    assert_eq!(r, Polynomial::new(vec![0]));   
+    assert_eq!(r, Polynomial::new(vec![0]));
 }
