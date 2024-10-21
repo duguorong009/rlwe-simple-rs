@@ -20,11 +20,17 @@ fn main() {
 
     // plaintexts
     let m0 = {
-        let coeffs = vec![rng.gen_range(t..q); n];
+        let mut coeffs = vec![0; n];
+        for i in 0..n {
+            coeffs[i] = rng.gen_range(t..q);
+        }
         Rq::new(coeffs, t)
     };
     let m1 = {
-        let coeffs = vec![rng.gen_range(t..q); n];
+        let mut coeffs = vec![0; n];
+        for i in 0..n {
+            coeffs[i] = rng.gen_range(t..q);
+        }
         Rq::new(coeffs, t)
     };
 
@@ -36,7 +42,7 @@ fn main() {
 
     println!("m0: {}", m0);
     println!("m_0: {}", m_0);
-    
+
     println!("m1: {}", m1);
     println!("m_1: {}", m_1);
 }

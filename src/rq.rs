@@ -23,7 +23,7 @@ impl Rq {
         f[n] = 1;
         let f = Polynomial::new(f);
 
-        let coeffs = coeffs.into_iter().map(|i| i % q).collect::<Vec<i64>>();
+        let coeffs = coeffs.into_iter().map(|i| (i % q + q) % q).collect::<Vec<i64>>();
         let coeffs = crange(coeffs, q);
         let poly = Polynomial::new(coeffs);
 
@@ -105,6 +105,11 @@ fn poly_div(
 ) -> (Polynomial<i64>, Polynomial<i64>) {
     let mut dividend = dividend.data().to_vec().clone(); // We will modify the dividend
     let divisor = divisor.data().to_vec().clone();
+
+    if dividend.len() < divisor.len() {
+        return (Polynomial::new(vec![0]), Polynomial::new(dividend));
+    }
+    
     let mut quotient = vec![0; dividend.len() - divisor.len() + 1];
 
     // Perform division until degree of the dividend is less than divisor
@@ -145,4 +150,10 @@ fn test_poly_div() {
     let (q, r) = poly_div(&dividend, &divisor);
     assert_eq!(q, Polynomial::new(vec![3, 1, 2]));
     assert_eq!(r, Polynomial::new(vec![0]));
+
+    let dividend = Polynomial::new(vec![2]);
+    let divisor = Polynomial::new(vec![1, 1]);
+    let (q, r) = poly_div(&dividend, &divisor);
+    assert_eq!(q, Polynomial::new(vec![0]));
+    assert_eq!(r, Polynomial::new(vec![2]));
 }
