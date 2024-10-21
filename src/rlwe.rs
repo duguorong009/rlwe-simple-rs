@@ -16,6 +16,26 @@ impl RLWE {
 
         RLWE { n, p, t, std_ }
     }
+
+    pub fn generate_keys(&self) -> (Rq, (Rq, Rq)) {
+        todo!()
+    }
+
+    pub fn encrypt(&self, m: Rq, a: Rq) -> Rq {
+        todo!()
+    }
+
+    pub fn decrypt(&self, c: Vec<Rq>, s: Rq) -> Rq {
+        todo!()
+    }
+
+    pub fn add(&self, c0: Vec<Rq>, c1: Vec<Rq>) -> Rq {
+        todo!()
+    }
+
+    pub fn mul(&self, c0: Vec<Rq>, c1: Vec<Rq>) -> Rq {
+        todo!()
+    }
 }
 
 fn discrete_gaussian(n: usize, q: i64, std_: f64) -> Rq {
