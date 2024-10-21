@@ -1,4 +1,3 @@
-mod polynomial;
 mod rlwe;
 mod rq;
 
