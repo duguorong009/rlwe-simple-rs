@@ -4,6 +4,7 @@ use polynomial::Polynomial;
 
 /// Ring-Polynomial: Fq[x] / (x ^ n + 1)
 /// range of the reminder is set to (-q/2, q/2)
+#[derive(Clone, Debug)]
 pub struct Rq {
     f: Polynomial<i64>,
     q: i64,                // modulus

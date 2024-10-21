@@ -5,12 +5,12 @@ use crate::rq::Rq;
 pub struct RLWE {
     n: usize,
     p: i64,
-    t: usize,
+    t: i64,
     std_: f64,
 }
 
 impl RLWE {
-    pub fn new(n: usize, p: i64, t: usize, std_: f64) -> RLWE {
+    pub fn new(n: usize, p: i64, t: i64, std_: f64) -> RLWE {
         let m = (n as f64).log2().round() as usize;
         assert!(m.pow(2) == n, "n must be a power of 2");
 
@@ -18,7 +18,13 @@ impl RLWE {
     }
 
     pub fn generate_keys(&self) -> (Rq, (Rq, Rq)) {
-        todo!()
+        let s = discrete_gaussian(self.n, self.p, self.std_);
+        let e = discrete_gaussian(self.n, self.p, self.std_);
+
+        let a1 = discrete_uniform(self.n, self.p, None, None);
+        let a0 = (a1.clone() * s.clone() + e * self.t) * -1;
+
+        (s, (a0, a1))
     }
 
     pub fn encrypt(&self, m: Rq, a: Rq) -> Rq {
