@@ -12,7 +12,7 @@ pub struct RLWE {
 impl RLWE {
     pub fn new(n: usize, p: i64, t: i64, std_: f64) -> RLWE {
         let m = (n as f64).log2().round() as usize;
-        assert!(m.pow(2) == n, "n must be a power of 2");
+        assert!(2_usize.pow(m as u32) == n, "n must be a power of 2");
 
         RLWE { n, p, t, std_ }
     }
@@ -27,10 +27,8 @@ impl RLWE {
         (s, (a0, a1))
     }
 
-    pub fn encrypt(&self, m: Rq, a: Vec<Rq>) -> (Rq, Rq) {
-        assert!(a.len() == 2);
-        let a0 = a[0].clone();
-        let a1 = a[1].clone();
+    pub fn encrypt(&self, m: Rq, a: (Rq, Rq)) -> (Rq, Rq) {
+        let (a0, a1) = a;
 
         let mut e = vec![];
         for _ in 0..3 {
