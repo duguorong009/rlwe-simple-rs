@@ -8,7 +8,7 @@ use polynomial::Polynomial;
 pub struct Rq {
     f: Polynomial<i64>,
     q: i64,                // modulus
-    poly: Polynomial<i64>, // coefficients
+    pub(crate) poly: Polynomial<i64>, // coefficients
 }
 
 impl Rq {

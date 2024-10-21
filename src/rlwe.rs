@@ -27,8 +27,19 @@ impl RLWE {
         (s, (a0, a1))
     }
 
-    pub fn encrypt(&self, m: Rq, a: Rq) -> Rq {
-        todo!()
+    pub fn encrypt(&self, m: Rq, a: Vec<Rq>) -> (Rq, Rq) {
+        assert!(a.len() == 2);
+        let a0 = a[0].clone();
+        let a1 = a[1].clone();
+
+        let mut e = vec![];
+        for _ in 0..3 {
+            e.push(discrete_gaussian(self.n, self.p, self.std_));
+        }
+
+        let m = Rq::new(m.poly.data().to_vec(), self.p);
+
+        (m + a0 * e[0].clone() + e[2].clone() * self.t, a1 * e[0].clone() + e[1].clone() * self.t)
     }
 
     pub fn decrypt(&self, c: Vec<Rq>, s: Rq) -> Rq {
