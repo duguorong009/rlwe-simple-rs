@@ -78,6 +78,17 @@ impl Mul<i64> for Rq {
     }
 }
 
+pub(crate) fn pow_rq(x: &Rq, n: usize) -> Rq {
+    if n == 0 {
+        return Rq::new(vec![1], x.q);
+    }
+    let mut ret = x.clone();
+    for _ in 1..n {
+        ret = ret * x.clone();
+    }
+    ret
+}
+
 fn crange(coeffs: Vec<i64>, q: i64) -> Vec<i64> {
     let mut coeffs = coeffs;
     for i in 0..coeffs.len() {

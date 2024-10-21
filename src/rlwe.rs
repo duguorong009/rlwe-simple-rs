@@ -1,6 +1,6 @@
 use rand::Rng;
 
-use crate::rq::Rq;
+use crate::rq::{pow_rq, Rq};
 
 pub struct RLWE {
     n: usize,
@@ -43,7 +43,16 @@ impl RLWE {
     }
 
     pub fn decrypt(&self, c: Vec<Rq>, s: Rq) -> Rq {
-        todo!()
+        let c: Vec<Rq> = c.into_iter().enumerate().map(|(i, ci)| ci * pow_rq(&s, i)).collect();
+
+        let mut m = c[0].clone();
+        for i in 1..c.len() {
+            m = m + c[i].clone();
+        }
+
+        m = Rq::new(m.poly.data().to_vec(), self.t);
+
+        m
     }
 
     pub fn add(&self, c0: Vec<Rq>, c1: Vec<Rq>) -> Rq {
