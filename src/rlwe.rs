@@ -78,8 +78,29 @@ impl RLWE {
         c
     }
 
-    pub fn mul(&self, c0: Vec<Rq>, c1: Vec<Rq>) -> Rq {
-        todo!()
+    pub fn mul(&self, mut c0: Vec<Rq>, mut c1: Vec<Rq>) -> Vec<Rq> {
+        let mut c: Vec<Rq> = vec![];
+
+        let k0 = c0.len() - 1;
+        let k1 = c1.len() - 1;
+
+        for _ in 0..k1 {
+            c0.push(Rq::new(vec![0], self.p));
+        }
+
+        for _ in 0..k0 {
+            c1.push(Rq::new(vec![0], self.p));
+        }
+
+        for i in 0..k0 + k1 + 1 {
+            let mut c_ = Rq::new(vec![0], self.p);
+            for j in 0..i + 1 {
+                c_ = c_ + c0[j].clone() * c1[i - j].clone();
+            }
+            c.push(c_);
+        }
+
+        c
     }
 }
 
