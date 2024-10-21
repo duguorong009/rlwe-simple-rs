@@ -1,4 +1,4 @@
-use std::ops::Add;
+use std::ops::{Add, Mul};
 
 use polynomial::Polynomial;
 
@@ -56,6 +56,16 @@ impl Add for Rq {
     }
 }
 
+impl Mul for Rq {
+    type Output = Rq;
+
+    fn mul(self, other: Rq) -> Rq {
+        let poly = self.poly * other.poly;
+        let (_, r) = poly_div(&poly, &self.f);
+        Rq::new(r.data().to_vec(), self.q)
+    }
+}
+
 fn crange(coeffs: Vec<i64>, q: i64) -> Vec<i64> {
     let mut coeffs = coeffs;
     for i in 0..coeffs.len() {
@@ -64,4 +74,49 @@ fn crange(coeffs: Vec<i64>, q: i64) -> Vec<i64> {
         }
     }
     coeffs
+}
+
+fn poly_div(dividend: &Polynomial<i64>, divisor: &Polynomial<i64>) -> (Polynomial<i64>, Polynomial<i64>) {
+    let mut dividend = dividend.data().to_vec().clone();  // We will modify the dividend
+    let divisor = divisor.data().to_vec().clone();
+    let mut quotient = vec![0; dividend.len() - divisor.len() + 1];
+    
+    // Perform division until degree of the dividend is less than divisor
+    while dividend.len() >= divisor.len() {
+        // Leading term of the quotient
+        let lead_coeff = dividend[dividend.len() - 1] / divisor[divisor.len() - 1];
+        let degree_diff = dividend.len() - divisor.len();
+
+        // Update the quotient with the leading term
+        quotient[degree_diff] = lead_coeff;
+
+        // Subtract (divisor * lead_coeff * x^degree_diff) from dividend
+        for i in 0..divisor.len() {
+            dividend[degree_diff + i] -= lead_coeff * divisor[i];
+        }
+
+        // Remove the last (leading) term of dividend if it is zero
+        dividend.pop();
+    }
+
+    let quotient = Polynomial::new(quotient);
+    let dividend = Polynomial::new(dividend);
+    (quotient, dividend)  // Quotient and remainder
+}
+
+#[test]
+fn test_poly_div() {
+    // (x^2 - 2x + 1) / (x - 1) = (x - 1, 0)
+    let dividend = Polynomial::new(vec![1, -2, 1]);
+    let divisor = Polynomial::new(vec![-1, 1]);
+    let (q, r) = poly_div(&dividend, &divisor);
+    assert_eq!(q, Polynomial::new(vec![-1, 1]));
+    assert_eq!(r, Polynomial::new(vec![0]));
+
+    // (2 x^3 + 3 x^2 + 4x + 3) / (x + 1) = (2 x^2 + x + 3, 0)
+    let dividend = Polynomial::new(vec![3, 4, 3, 2]);
+    let divisor = Polynomial::new(vec![1, 1]);
+    let (q, r) = poly_div(&dividend, &divisor);
+    assert_eq!(q, Polynomial::new(vec![3, 1, 2]));
+    assert_eq!(r, Polynomial::new(vec![0]));   
 }
