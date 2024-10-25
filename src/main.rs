@@ -6,8 +6,6 @@ mod rlwe;
 mod rq;
 
 fn main() {
-    println!("Hello, world!");
-
     let mut rng = rand::thread_rng();
 
     let n = 8; // power of 2
