@@ -37,11 +37,18 @@ impl RLWE {
 
         let m = Rq::new(m.poly.data().to_vec(), self.p);
 
-        (m + a0 * e[0].clone() + e[2].clone() * self.t, a1 * e[0].clone() + e[1].clone() * self.t)
+        (
+            m + a0 * e[0].clone() + e[2].clone() * self.t,
+            a1 * e[0].clone() + e[1].clone() * self.t,
+        )
     }
 
     pub fn decrypt(&self, c: Vec<Rq>, s: Rq) -> Rq {
-        let c: Vec<Rq> = c.into_iter().enumerate().map(|(i, ci)| ci * pow_rq(&s, i)).collect();
+        let c: Vec<Rq> = c
+            .into_iter()
+            .enumerate()
+            .map(|(i, ci)| ci * pow_rq(&s, i))
+            .collect();
 
         let mut m = c[0].clone();
         for i in 1..c.len() {
@@ -59,11 +66,7 @@ impl RLWE {
         let k0 = c0.len();
         let k1 = c1.len();
 
-        let (mut c0, c1) = if k0 > k1 {
-            (c1, c0)
-        } else {
-            (c0, c1)
-        };
+        let (mut c0, c1) = if k0 > k1 { (c1, c0) } else { (c0, c1) };
 
         for _ in 0..k0.abs_diff(k1) {
             c0.push(Rq::new(vec![0], self.p));

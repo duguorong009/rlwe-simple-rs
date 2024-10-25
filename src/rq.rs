@@ -7,7 +7,7 @@ use polynomial::Polynomial;
 #[derive(Clone, Debug)]
 pub struct Rq {
     f: Polynomial<i64>,
-    q: i64,                // modulus
+    q: i64,                           // modulus
     pub(crate) poly: Polynomial<i64>, // coefficients
 }
 
@@ -23,7 +23,10 @@ impl Rq {
         f[n] = 1;
         let f = Polynomial::new(f);
 
-        let coeffs = coeffs.into_iter().map(|i| (i % q + q) % q).collect::<Vec<i64>>();
+        let coeffs = coeffs
+            .into_iter()
+            .map(|i| (i % q + q) % q)
+            .collect::<Vec<i64>>();
         let coeffs = crange(coeffs, q);
         let poly = Polynomial::new(coeffs);
 
@@ -109,7 +112,7 @@ fn poly_div(
     if dividend.len() < divisor.len() {
         return (Polynomial::new(vec![0]), Polynomial::new(dividend));
     }
-    
+
     let mut quotient = vec![0; dividend.len() - divisor.len() + 1];
 
     // Perform division until degree of the dividend is less than divisor

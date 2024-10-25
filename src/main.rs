@@ -48,7 +48,10 @@ fn main() {
     println!("ADD");
     println!("m0 + m1: {}", m0.clone() + m1.clone());
 
-    let c_add = rlwe.add(vec![c0.0.clone(), c0.1.clone()], vec![c1.0.clone(), c1.1.clone()]);
+    let c_add = rlwe.add(
+        vec![c0.0.clone(), c0.1.clone()],
+        vec![c1.0.clone(), c1.1.clone()],
+    );
     let m_add = rlwe.decrypt(c_add, sk.clone());
     println!("m0 + m1: {}", m_add);
 
@@ -56,7 +59,10 @@ fn main() {
     println!("MUL");
     println!("m0 * m1: {}", m0 * m1);
 
-    let c_mul = rlwe.mul(vec![c0.0.clone(), c0.1.clone()], vec![c1.0.clone(), c1.1.clone()]);
+    let c_mul = rlwe.mul(
+        vec![c0.0.clone(), c0.1.clone()],
+        vec![c1.0.clone(), c1.1.clone()],
+    );
     let m_mul = rlwe.decrypt(c_mul, sk);
     println!("m0 * m1: {}", m_mul);
 }
